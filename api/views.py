@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from api.queue_datastructure import Queue
 import json
+from twilio.rest import Client
 
 # initialize a 'Doe' family
 queue = Queue(mode='FIFO')
@@ -15,17 +16,17 @@ The MembersView will contain the logic on how to:
 """
 class QueueView(APIView):
     def get(self, request):
+        result = queue.dequeue()
         # fill this method and update the return
-        result = None
-        return Response(result, status=status.HTTP_200_OK)
+        return Response(result,status=status.HTTP_200_OK)
 
     def post(self, request):
         # add a new member to the queue
-        result = None
+        item = request.data
+        result = queue.enqueue(item)
         return Response(result, status=status.HTTP_200_OK)
 
 class QueueAllView(APIView):
     def get(self, request):
-        # respond a json with all the queue items
-        result = None
+        result = queue.get_all()
         return Response(result, status=status.HTTP_200_OK)
